@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appliance Energy Consumption - Australia | COS30045 T01</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              green: '#2e7d32',
+              darkgreen: '#1b5e20',
+              lightgreen: '#e8f5e9',
+              midgreen: '#4caf50',
+              yellow: '#f5c518',
+              gold: '#f5d166',
+              amber: '#e59c16',
+              brown: '#8c6d3b',
+              lightyellow: '#fffde7'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom SVG Logo Styles matching provided image */
+    .power-icon-circle {
+      fill: #fbe285;
+      stroke: #8c6d3b;
+      stroke-width: 14;
+    }
+    .power-icon-bolt {
+      fill: #e59c16;
+      stroke: #8c6d3b;
+      stroke-width: 10;
+      stroke-linejoin: round;
+    }
+    .power-icon-ray {
+      stroke: #8c6d3b;
+      stroke-width: 12;
+      stroke-linecap: round;
+    }
+
+    /* Active Nav Styling */
+    .nav-btn {
+      position: relative;
+      transition: all 0.2s ease-in-out;
+    }
+    .nav-btn.active {
+      color: #1b5e20;
+      font-weight: 700;
+      background-color: #e8f5e9;
+      border-bottom: 3px solid #2e7d32;
+    }
+    .nav-btn:hover:not(.active) {
+      background-color: #f4fbf4;
+      color: #2e7d32;
+    }
+
+    /* Tab Button Styles */
+    .tab-btn.active-tab {
+      background-color: #2e7d32;
+      color: #ffffff;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #81c784;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #2e7d32;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col antialiased selection:bg-brand-gold selection:text-brand-darkgreen">
+
+  <!-- TOP NAVIGATION HEADER -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur shadow-md border-b-2 border-brand-green">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Logo Section -->
+        <div class="flex items-center space-x-3 cursor-pointer group" id="logo-button" onclick="navigateTo('home')">
+          <div class="w-12 h-12 transform group-hover:scale-105 transition-transform duration-200">
+            <!-- Custom SVG Power Icon matching the user's uploaded icon style -->
+            <svg viewBox="0 0 400 400" class="w-full h-full drop-shadow">
+              <circle cx="200" cy="200" r="180" class="power-icon-circle"/>
+              <!-- Rays -->
+              <line x1="200" y1="70" x2="200" y2="105" class="power-icon-ray"/>
+              <line x1="200" y1="295" x2="200" y2="330" class="power-icon-ray"/>
+              <line x1="70" y1="200" x2="105" y2="200" class="power-icon-ray"/>
+              <line x1="295" y1="200" x2="330" y2="200" class="power-icon-ray"/>
+              <line x1="108" y1="108" x2="133" y2="133" class="power-icon-ray"/>
+              <line x1="267" y1="267" x2="292" y2="292" class="power-icon-ray"/>
+              <!-- Center Lightning Bolt -->
+              <polygon points="220,70 120,210 190,210 180,330 280,190 210,190" class="power-icon-bolt"/>
+            </svg>
+          </div>
+          <div>
+            <span class="text-xl font-extrabold text-brand-darkgreen tracking-tight flex items-center gap-1.5">
+              EnergyWise <span class="text-xs bg-brand-yellow text-brand-brown px-2 py-0.5 rounded-full font-bold uppercase tracking-wider border border-brand-brown/20">AU</span>
+            </span>
+            <p class="text-xs text-gray-500 font-medium">Appliance Energy Portal</p>
+          </div>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex space-x-2" aria-label="Main Navigation">
+          <button onclick="navigateTo('home')" id="nav-home" class="nav-btn px-5 py-2.5 rounded-lg text-sm font-semibold text-gray-700 flex items-center space-x-2">
+            <i class="fa-solid fa-house text-sm"></i>
+            <span>Home</span>
+          </button>
+          <button onclick="navigateTo('televisions')" id="nav-televisions" class="nav-btn px-5 py-2.5 rounded-lg text-sm font-semibold text-gray-700 flex items-center space-x-2">
+            <i class="fa-solid fa-tv text-sm"></i>
+            <span>Televisions</span>
+          </button>
+          <button onclick="navigateTo('about')" id="nav-about" class="nav-btn px-5 py-2.5 rounded-lg text-sm font-semibold text-gray-700 flex items-center space-x-2">
+            <i class="fa-solid fa-circle-info text-sm"></i>
+            <span>About Us</span>
+          </button>
+        </nav>
+
+        <!-- Copilot/GenAI Quick Trigger Button -->
+        <div class="flex items-center gap-2">
+          <button onclick="toggleGenAiModal()" class="inline-flex items-center gap-2 bg-gradient-to-r from-brand-green to-brand-darkgreen text-white px-3.5 py-2 rounded-lg text-xs font-semibold shadow hover:shadow-lg hover:from-brand-darkgreen hover:to-green-900 transition-all cursor-pointer">
+            <i class="fa-solid fa-robot text-brand-gold"></i>
+            <span class="hidden sm:inline">GenAI Reflection</span>
+          </button>
+
+          <!-- Mobile menu button -->
+          <button onclick="toggleMobileMenu()" type="button" class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-brand-green hover:bg-gray-100 focus:outline-none">
+            <i class="fa-solid fa-bars text-xl" id="menu-icon"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div class="hidden md:hidden border-t border-gray-200 bg-white" id="mobile-menu">
+      <div class="px-2 pt-2 pb-3 space-y-1">
+        <button onclick="navigateTo('home'); toggleMobileMenu()" id="mob-nav-home" class="w-full text-left px-4 py-3 rounded-md text-base font-medium text-gray-700 hover:bg-brand-lightgreen hover:text-brand-green flex items-center space-x-3">
+          <i class="fa-solid fa-house w-5"></i>
+          <span>Home</span>
+        </button>
+        <button onclick="navigateTo('televisions'); toggleMobileMenu()" id="mob-nav-televisions" class="w-full text-left px-4 py-3 rounded-md text-base font-medium text-gray-700 hover:bg-brand-lightgreen hover:text-brand-green flex items-center space-x-3">
+          <i class="fa-solid fa-tv w-5"></i>
+          <span>Televisions</span>
+        </button>
+        <button onclick="navigateTo('about'); toggleMobileMenu()" id="mob-nav-about" class="w-full text-left px-4 py-3 rounded-md text-base font-medium text-gray-700 hover:bg-brand-lightgreen hover:text-brand-green flex items-center space-x-3">
+          <i class="fa-solid fa-circle-info w-5"></i>
+          <span>About Us</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- SECTION 1: HOME PAGE -->
+    <section id="page-home" class="space-y-10 transition-opacity duration-300">
+      
+      <!-- Hero Banner -->
+      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-darkgreen via-brand-green to-emerald-800 text-white shadow-xl">
+        <div class="absolute -right-10 -bottom-10 opacity-15 pointer-events-none">
+          <i class="fa-solid fa-bolt text-[280px] text-brand-gold"></i>
+        </div>
+        <div class="relative z-10 px-6 py-12 sm:px-12 lg:py-16 max-w-3xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur border border-white/20 text-brand-gold text-xs font-semibold mb-4">
+            <i class="fa-solid fa-star"></i>
+            Australian Energy Rating Standards
+          </div>
+          <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight mb-4">
+            Understanding Appliance Energy Usage in Australia
+          </h1>
+          <p class="text-lg text-emerald-100 mb-8 leading-relaxed">
+            Empowering Australian households to make informed energy choices. Compare efficiency star ratings, estimate running costs, and lower electricity bills across residential appliances.
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <button onclick="navigateTo('televisions')" class="bg-brand-yellow hover:bg-yellow-400 text-brand-brown font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
+              <i class="fa-solid fa-tv"></i> Explore TV Consumption
+            </button>
+            <a href="#calculator" class="bg-white/15 hover:bg-white/25 text-white font-semibold px-6 py-3 rounded-xl backdrop-blur transition-all flex items-center gap-2">
+              <i class="fa-solid fa-calculator"></i> Quick Calculator
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Energy Rating Overview Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Card 1 -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-12 h-12 bg-amber-100 text-amber-700 rounded-xl flex items-center justify-center text-xl mb-4">
+            <i class="fa-solid fa-star-half-stroke"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Energy Rating Labels</h3>
+          <p class="text-gray-600 text-sm leading-relaxed mb-4">
+            Australia's standard Energy Rating Label allows consumers to compare the energy efficiency and running costs of appliances like TVs, fridges, and washing machines.
+          </p>
+          <span class="inline-block text-xs font-semibold text-brand-green bg-brand-lightgreen px-2.5 py-1 rounded-md">
+            1 to 10 Star Scale System
+          </span>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-12 h-12 bg-emerald-100 text-brand-green rounded-xl flex items-center justify-center text-xl mb-4">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">E3 & MEPS Regulations</h3>
+          <p class="text-gray-600 text-sm leading-relaxed mb-4">
+            The Equipment Energy Efficiency (E3) program enforces Minimum Energy Performance Standards (MEPS) to eliminate inefficient appliances from the Australian market.
+          </p>
+          <span class="inline-block text-xs font-semibold text-brand-green bg-brand-lightgreen px-2.5 py-1 rounded-md">
+            National Standards
+          </span>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-12 h-12 bg-yellow-100 text-yellow-700 rounded-xl flex items-center justify-center text-xl mb-4">
+            <i class="fa-solid fa-piggy-bank"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Running Cost Impact</h3>
+          <p class="text-gray-600 text-sm leading-relaxed mb-4">
+            An appliance's purchase price is only part of its total cost. High-efficiency models save hundreds of dollars in electricity tariff over a 10-year lifespan.
+          </p>
+          <span class="inline-block text-xs font-semibold text-brand-green bg-brand-lightgreen px-2.5 py-1 rounded-md">
+            Avg. ~30c/kWh Standard Rate
+          </span>
+        </div>
+      </div>
+
+      <!-- Interactive Calculator Widget -->
+      <div id="calculator" class="bg-gradient-to-br from-brand-lightyellow via-white to-brand-lightgreen border-2 border-brand-gold/50 rounded-3xl p-6 sm:p-10 shadow-lg">
+        <div class="max-w-2xl">
+          <div class="inline-flex items-center gap-2 text-brand-brown font-bold text-xs uppercase tracking-widest mb-1">
+            <i class="fa-solid fa-sliders"></i> Interactive Utility
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3">
+            Quick Appliance Energy Cost Calculator
+          </h2>
+          <p class="text-gray-600 text-sm mb-6">
+            Estimate annual running costs based on typical Australian electricity rates (default $0.30 per kWh).
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <!-- Inputs -->
+          <div class="lg:col-span-7 space-y-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2 justify-between flex">
+                <span>Power Consumption (Watts)</span>
+                <span id="watt-val" class="text-brand-green font-bold">120 W</span>
+              </label>
+              <input type="range" id="input-watts" min="10" max="2500" step="10" value="120" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-brand-green" oninput="calculateEnergy()">
+              <div class="flex justify-between text-xs text-gray-400 mt-1">
+                <span>10W (LED Bulb)</span>
+                <span>500W (Large TV)</span>
+                <span>2500W (Heater)</span>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2 justify-between flex">
+                <span>Daily Usage Hours</span>
+                <span id="hours-val" class="text-brand-green font-bold">6 Hours</span>
+              </label>
+              <input type="range" id="input-hours" min="0.5" max="24" step="0.5" value="6" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-brand-green" oninput="calculateEnergy()">
+              <div class="flex justify-between text-xs text-gray-400 mt-1">
+                <span>30 mins</span>
+                <span>12 hrs</span>
+                <span>24 hrs</span>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2 justify-between flex">
+                <span>Electricity Tariff ($ AUD per kWh)</span>
+                <span id="tariff-val" class="text-brand-green font-bold">$0.30/kWh</span>
+              </label>
+              <input type="range" id="input-tariff" min="0.15" max="0.65" step="0.01" value="0.30" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-brand-green" oninput="calculateEnergy()">
+              <div class="flex justify-between text-xs text-gray-400 mt-1">
+                <span>$0.15 (Off-peak)</span>
+                <span>$0.30 (Avg)</span>
+                <span>$0.65 (Peak)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Output Box -->
+          <div class="lg:col-span-5 bg-brand-darkgreen text-white rounded-2xl p-6 text-center shadow-md flex flex-col justify-center items-center h-full border-t-4 border-brand-yellow">
+            <span class="text-brand-gold text-xs font-bold uppercase tracking-wider mb-1">Estimated Results</span>
+            <div class="text-4xl sm:text-5xl font-extrabold text-brand-yellow my-2" id="calc-cost">
+              $78.84
+            </div>
+            <p class="text-xs text-emerald-200 mb-4">Estimated Annual Running Cost</p>
+            
+            <div class="w-full border-t border-emerald-700/60 pt-4 grid grid-cols-2 gap-2 text-xs">
+              <div class="bg-emerald-900/50 p-2 rounded-lg">
+                <span class="text-gray-300 block">Daily Energy</span>
+                <strong id="calc-daily-kwh" class="text-white text-sm">0.72 kWh</strong>
+              </div>
+              <div class="bg-emerald-900/50 p-2 rounded-lg">
+                <span class="text-gray-300 block">Annual Usage</span>
+                <strong id="calc-annual-kwh" class="text-white text-sm">262.8 kWh</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SECTION 2: TELEVISIONS PAGE -->
+    <section id="page-televisions" class="hidden space-y-10 transition-opacity duration-300">
+      
+      <!-- Televisions Hero Banner -->
+      <div class="bg-white rounded-3xl p-6 sm:p-10 border border-gray-200 shadow-sm relative overflow-hidden">
+        <div class="max-w-3xl">
+          <span class="text-xs font-bold text-brand-green uppercase tracking-widest bg-brand-lightgreen px-3 py-1 rounded-full">
+            Focus Category: Entertainment
+          </span>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mt-3 mb-4">
+            Television Energy Efficiency in Australia
+          </h1>
+          <p class="text-gray-600 leading-relaxed">
+            Televisions account for a significant portion of home entertainment energy consumption. Display technologies (OLED vs. QLED vs. LED), screen sizes, and High Dynamic Range (HDR) modes dramatically affect power draw and electricity bills.
+          </p>
+        </div>
+      </div>
+
+      <!-- Interactive Filters & Comparison Controls -->
+      <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-4">
+          <div>
+            <h2 class="text-lg font-bold text-gray-900">Compare TV Energy Profiles</h2>
+            <p class="text-xs text-gray-500">Filter models by screen size and display tech in the Australian dataset</p>
+          </div>
+          
+          <!-- Filter Tabs -->
+          <div class="flex flex-wrap gap-2" id="tech-filters">
+            <button onclick="filterTvs('all')" class="tab-btn active-tab text-xs font-semibold px-4 py-2 rounded-xl transition-all border border-gray-200">
+              All Tech
+            </button>
+            <button onclick="filterTvs('OLED')" class="tab-btn bg-gray-100 text-gray-700 text-xs font-semibold px-4 py-2 rounded-xl hover:bg-gray-200 transition-all border border-gray-200">
+              OLED
+            </button>
+            <button onclick="filterTvs('QLED')" class="tab-btn bg-gray-100 text-gray-700 text-xs font-semibold px-4 py-2 rounded-xl hover:bg-gray-200 transition-all border border-gray-200">
+              QLED / Mini-LED
+            </button>
+            <button onclick="filterTvs('LED')" class="tab-btn bg-gray-100 text-gray-700 text-xs font-semibold px-4 py-2 rounded-xl hover:bg-gray-200 transition-all border border-gray-200">
+              Standard LED
+            </button>
+          </div>
+        </div>
+
+        <!-- TV Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="tv-grid">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- TV Energy Key Insights -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-6">
+          <h3 class="text-lg font-bold text-brand-darkgreen mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-lightbulb text-brand-yellow"></i> Standby Power & SDR vs HDR
+          </h3>
+          <ul class="text-sm text-emerald-900 space-y-2 list-disc list-inside">
+            <li>Modern TVs consume under <strong>0.5 Watts</strong> in standby mode in compliance with Australian MEPS regulations.</li>
+            <li>HDR (High Dynamic Range) content increases backlight brightness, raising power usage by up to <strong>30% - 50%</strong> compared to standard SDR viewing.</li>
+            <li>Automatic Brightness Control (ABC) sensors adjust screen brightness based on ambient room light to optimize energy efficiency.</li>
+          </ul>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-200 rounded-2xl p-6">
+          <h3 class="text-lg font-bold text-amber-900 mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-ruler-combined text-brand-amber"></i> Screen Size Multiplier Effect
+          </h3>
+          <p class="text-sm text-amber-900 leading-relaxed mb-3">
+            Moving from a 55-inch television to a 75-inch screen increases total display area by approximately <strong>85%</strong>, requiring substantially more energy regardless of star rating.
+          </p>
+          <div class="text-xs bg-white/70 p-3 rounded-lg border border-amber-200 font-medium text-amber-950">
+            <strong>Tip:</strong> Always check the annual kWh metric on the label, not just the star rating, when upgrading display dimensions.
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SECTION 3: ABOUT US PAGE -->
+    <section id="page-about" class="hidden space-y-10 transition-opacity duration-300">
+      
+      <!-- Unit Banner -->
+      <div class="bg-white rounded-3xl p-6 sm:p-10 border border-gray-200 shadow-sm">
+        <div class="max-w-3xl">
+          <span class="text-xs font-bold text-brand-green uppercase tracking-widest bg-brand-lightgreen px-3 py-1 rounded-full">
+            COS30045 Data Visualisation
+          </span>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mt-3 mb-4">
+            About This Web Application
+          </h1>
+          <p class="text-gray-600 leading-relaxed mb-6">
+            This interactive demonstration website is created for <strong>Task T01 (a)</strong> of the unit COS30045 Data Visualisation. It serves as a foundational platform for hosting web-based interactive data visualisations built across subsequent unit tasks (e.g., T02, T03 using D3.js and SVG graphics).
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <span class="inline-flex items-center gap-1.5 text-xs font-semibold bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg border">
+              <i class="fa-brands fa-html5 text-orange-500"></i> HTML5
+            </span>
+            <span class="inline-flex items-center gap-1.5 text-xs font-semibold bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg border">
+              <i class="fa-brands fa-css3-alt text-blue-500"></i> CSS3 / Tailwind
+            </span>
+            <span class="inline-flex items-center gap-1.5 text-xs font-semibold bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg border">
+              <i class="fa-brands fa-js text-yellow-500"></i> Vanilla JavaScript
+            </span>
+            <span class="inline-flex items-center gap-1.5 text-xs font-semibold bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg border">
+              <i class="fa-brands fa-github text-gray-800"></i> GitHub & Vercel
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Roadmap & Unit Tasks -->
+      <div class="bg-white rounded-2xl p-6 sm:p-8 border border-gray-200 shadow-sm">
+        <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+          <i class="fa-solid fa-map text-brand-green"></i> Unit Project Roadmap & Visualisation Hub
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="border-2 border-brand-green bg-brand-lightgreen/30 p-5 rounded-xl relative">
+            <span class="absolute top-3 right-3 text-xs bg-brand-green text-white px-2 py-0.5 rounded-full font-bold">Active</span>
+            <h3 class="font-bold text-brand-darkgreen mb-2">Task T01</h3>
+            <p class="text-xs text-gray-600 mb-3">Website Structure, GitHub Setup, Responsive Navigation & Energy Data Shell.</p>
+            <span class="text-xs text-brand-green font-semibold">Completed ✓</span>
+          </div>
+
+          <div class="border border-gray-200 p-5 rounded-xl bg-gray-50">
+            <span class="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full font-bold float-right">Upcoming</span>
+            <h3 class="font-bold text-gray-800 mb-2">Task T02</h3>
+            <p class="text-xs text-gray-500 mb-3">Interactive D3.js Charts & Comparative Energy Consumption Visuals.</p>
+            <span class="text-xs text-gray-400 font-semibold">Placeholder Target</span>
+          </div>
+
+          <div class="border border-gray-200 p-5 rounded-xl bg-gray-50">
+            <span class="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full font-bold float-right">Upcoming</span>
+            <h3 class="font-bold text-gray-800 mb-2">Task T03</h3>
+            <p class="text-xs text-gray-500 mb-3">Advanced Multi-Variable Filtering & Dynamic Dashboard Visualisations.</p>
+            <span class="text-xs text-gray-400 font-semibold">Placeholder Target</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Student & Project Meta Info -->
+      <div class="bg-gradient-to-r from-gray-900 to-brand-darkgreen text-white rounded-2xl p-6 sm:p-8 shadow-lg">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+          <div>
+            <h3 class="text-lg font-bold text-brand-gold mb-2">Project Submission Details</h3>
+            <p class="text-sm text-gray-300 leading-relaxed mb-4">
+              Prepared for COS30045 Data Visualisation Sign Off Demonstration 1. Hosted publicly on GitHub and deployed on Vercel.
+            </p>
+            <div class="space-y-1.5 text-xs text-gray-300">
+              <p><strong class="text-white">Unit:</strong> COS30045 - Data Visualisation</p>
+              <p><strong class="text-white">Topic:</strong> Australian Appliance Energy Consumption</p>
+              <p><strong class="text-white">Author:</strong> [Student Name / ID]</p>
+            </div>
+          </div>
+          <div class="bg-white/10 p-5 rounded-xl border border-white/10 text-xs space-y-3">
+            <div class="font-bold text-brand-yellow text-sm border-b border-white/10 pb-2">
+              <i class="fa-solid fa-code-commit mr-1"></i> Deployment Checklist
+            </div>
+            <div class="flex items-center gap-2"><i class="fa-solid fa-check text-green-400"></i> Single-page JavaScript Router</div>
+            <div class="flex items-center gap-2"><i class="fa-solid fa-check text-green-400"></i> Theme matched to Power Logo (#2e7d32 / #f5c518)</div>
+            <div class="flex items-center gap-2"><i class="fa-solid fa-check text-green-400"></i> Interactive Energy Calculator & TV Filter</div>
+            <div class="flex items-center gap-2"><i class="fa-solid fa-check text-green-400"></i> GitHub Copilot & GenAI Notes Modal included</div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-gray-900 text-gray-300 border-t-4 border-brand-yellow mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <!-- Col 1 -->
+        <div>
+          <div class="flex items-center space-x-2 mb-3">
+            <div class="w-7 h-7">
+              <svg viewBox="0 0 400 400" class="w-full h-full">
+                <circle cx="200" cy="200" r="180" class="power-icon-circle"/>
+                <polygon points="220,70 120,210 190,210 180,330 280,190 210,190" class="power-icon-bolt"/>
+              </svg>
+            </div>
+            <span class="text-lg font-extrabold text-white">EnergyWise AU</span>
+          </div>
+          <p class="text-xs text-gray-400 leading-relaxed">
+            Australian Appliance Energy Consumption Portal built for COS30045 Data Visualisation.
+          </p>
+        </div>
+
+        <!-- Col 2 -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-brand-gold mb-3">Quick Navigation</h4>
+          <ul class="space-y-2 text-xs">
+            <li><button onclick="navigateTo('home')" class="hover:text-brand-gold transition-colors">Home Page & Calculator</button></li>
+            <li><button onclick="navigateTo('televisions')" class="hover:text-brand-gold transition-colors">Televisions Energy Profile</button></li>
+            <li><button onclick="navigateTo('about')" class="hover:text-brand-gold transition-colors">About COS30045 & Roadmap</button></li>
+          </ul>
+        </div>
+
+        <!-- Col 3 -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-brand-gold mb-3">Generative AI Acknowledgement</h4>
+          <p class="text-xs text-gray-400 leading-relaxed bg-gray-800/80 p-3 rounded-lg border border-gray-700">
+            <i class="fa-solid fa-robot text-brand-yellow mr-1"></i>
+            <strong>GenAI Acknowledgement:</strong> Built with AI assistance (GitHub Copilot / Gemini) for initial HTML layout, Tailwind CSS green/yellow color palette styling, and interactive JavaScript widget logic.
+          </p>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-800 pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500 gap-4">
+        <p>© <span id="current-year">2026</span> EnergyWise AU — Developed by <span class="text-gray-300 font-semibold">[Your Name]</span> for COS30045 T01.</p>
+        <button onclick="toggleGenAiModal()" class="text-brand-gold hover:underline flex items-center gap-1">
+          <i class="fa-solid fa-file-code"></i> View README & GenAI Reflection Notes
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL: README & GenAI Reflection Notes -->
+  <div id="genai-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+      
+      <!-- Modal Header -->
+      <div class="bg-brand-darkgreen text-white p-5 flex justify-between items-center border-b-4 border-brand-yellow">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-robot text-brand-gold text-lg"></i>
+          <h3 class="font-bold text-lg">README.md & GenAI Reflection</h3>
+        </div>
+        <button onclick="toggleGenAiModal()" class="text-gray-300 hover:text-white text-xl font-bold p-1">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto space-y-5 text-sm text-gray-700">
+        <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 text-xs text-amber-900">
+          <i class="fa-solid fa-circle-info text-amber-600 mr-1"></i>
+          <strong>Submission Ready:</strong> Copy the text below or use these notes directly in your GitHub repository's <code class="bg-amber-100 px-1 rounded font-mono">README.md</code> file as required by COS30045 T01.
+        </div>
+
+        <div>
+          <h4 class="font-bold text-gray-900 text-base mb-2">1. Use of Generative AI / GitHub Copilot</h4>
+          <p class="text-xs leading-relaxed text-gray-600 mb-2">
+            During the development of Task T01 (a), Generative AI (GitHub Copilot / LLM prompts) was utilized for:
+          </p>
+          <ul class="list-disc list-inside text-xs text-gray-600 space-y-1 pl-2">
+            <li>Generating single-page dynamic section switching JavaScript logic (<code class="bg-gray-100 px-1 rounded">navigateTo()</code>).</li>
+            <li>Constructing the SVG Power Icon matching the custom yellow/gold emblem with brown stroke details.</li>
+            <li>Configuring Tailwind CSS utility classes using the Australian Energy rating color scheme (Green #2e7d32 & Yellow #f5c518).</li>
+            <li>Designing the interactive annual energy cost slider calculator formula.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-gray-900 text-base mb-2">2. Reflection on Experience</h4>
+          <p class="text-xs leading-relaxed text-gray-600">
+            Using AI assistance significantly accelerated the UI layout phase and allowed focusing on DOM interaction logic and data structure design. To ensure full code ownership, every generated component—such as event listeners, DOM class manipulation, and cost equations—was manually reviewed, tested, and validated for performance and responsiveness.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-gray-900 text-base mb-2">3. Repository & Hosting Details</h4>
+          <div class="bg-gray-50 p-3 rounded-lg border font-mono text-xs text-gray-800 space-y-1">
+            <p><strong>Repository:</strong> COS30045-T01-Appliance-Energy</p>
+            <p><strong>Deployment:</strong> Vercel (https://[your-project-name].vercel.app)</p>
+            <p><strong>Tech Stack:</strong> HTML5, CSS3 (Tailwind), JavaScript ES6</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="bg-gray-100 p-4 flex justify-between items-center border-t text-xs">
+        <span class="text-gray-500">COS30045 Task T01 (a) Documentation</span>
+        <button onclick="toggleGenAiModal()" class="bg-brand-green hover:bg-brand-darkgreen text-white font-semibold px-4 py-2 rounded-lg transition-colors">
+          Close Window
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // TV Mock Dataset for Australia
+    const tvData = [
+      { id: 1, brand: 'Sony', size: '55"', tech: 'OLED', model: 'Bravia XR A80L', stars: 5.5, kwhPerYear: 180, wattage: 100 },
+      { id: 2, brand: 'LG', size: '65"', tech: 'OLED', model: 'OLED C3 Series', stars: 6.0, kwhPerYear: 195, wattage: 110 },
+      { id: 3, brand: 'Samsung', size: '65"', tech: 'QLED', model: 'Neo QLED QN90C', stars: 5.0, kwhPerYear: 220, wattage: 125 },
+      { id: 4, brand: 'TCL', size: '55"', tech: 'QLED', model: 'C745 Mini-LED', stars: 5.5, kwhPerYear: 175, wattage: 98 },
+      { id: 5, brand: 'Hisense', size: '50"', tech: 'LED', model: 'A6HA Series', stars: 4.5, kwhPerYear: 160, wattage: 90 },
+      { id: 6, brand: 'Panasonic', size: '75"', tech: 'LED', model: '4K Smart LED TV', stars: 4.0, kwhPerYear: 310, wattage: 175 }
+    ];
+
+    // Page Navigation Router
+    function navigateTo(pageId) {
+      // Hide all pages
+      const pages = ['home', 'televisions', 'about'];
+      pages.forEach(p => {
+        const pageEl = document.getElementById(`page-${p}`);
+        const navEl = document.getElementById(`nav-${p}`);
+        const mobNavEl = document.getElementById(`mob-nav-${p}`);
+
+        if (pageEl) pageEl.classList.add('hidden');
+        if (navEl) navEl.classList.remove('active');
+        if (mobNavEl) mobNavEl.classList.remove('bg-brand-lightgreen', 'text-brand-green', 'font-bold');
+      });
+
+      // Show selected page
+      const activePage = document.getElementById(`page-${pageId}`);
+      const activeNav = document.getElementById(`nav-${pageId}`);
+      const activeMobNav = document.getElementById(`mob-nav-${pageId}`);
+
+      if (activePage) {
+        activePage.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Activate desktop button state
+      if (activeNav) {
+        activeNav.classList.add('active');
+      }
+
+      // Activate mobile button state
+      if (activeMobNav) {
+        activeMobNav.classList.add('bg-brand-lightgreen', 'text-brand-green', 'font-bold');
+      }
+    }
+
+    // Toggle Mobile Drawer Menu
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    }
+
+    // Toggle GenAI Modal
+    function toggleGenAiModal() {
+      const modal = document.getElementById('genai-modal');
+      modal.classList.toggle('hidden');
+    }
+
+    // Interactive Energy Calculator Logic
+    function calculateEnergy() {
+      const watts = parseFloat(document.getElementById('input-watts').value);
+      const hours = parseFloat(document.getElementById('input-hours').value);
+      const tariff = parseFloat(document.getElementById('input-tariff').value);
+
+      // Update UI slider value badges
+      document.getElementById('watt-val').innerText = `${watts} W`;
+      document.getElementById('hours-val').innerText = `${hours} Hours`;
+      document.getElementById('tariff-val').innerText = `$${tariff.toFixed(2)}/kWh`;
+
+      // Calculations
+      const dailyKwh = (watts * hours) / 1000;
+      const annualKwh = dailyKwh * 365;
+      const annualCost = annualKwh * tariff;
+
+      // Update Output Display
+      document.getElementById('calc-cost').innerText = `$${annualCost.toFixed(2)}`;
+      document.getElementById('calc-daily-kwh').innerText = `${dailyKwh.toFixed(2)} kWh`;
+      document.getElementById('calc-annual-kwh').innerText = `${annualKwh.toFixed(1)} kWh`;
+    }
+
+    // Render Televisions List
+    function renderTvs(items) {
+      const container = document.getElementById('tv-grid');
+      if (!container) return;
+
+      container.innerHTML = items.map(tv => {
+        const annualCost = (tv.kwhPerYear * 0.30).toFixed(2);
+        
+        // Star rendering helper
+        const fullStars = Math.floor(tv.stars);
+        const hasHalf = tv.stars % 1 !== 0;
+        let starIcons = '';
+        for (let i = 0; i < fullStars; i++) starIcons += '<i class="fa-solid fa-star text-brand-yellow"></i>';
+        if (hasHalf) starIcons += '<i class="fa-solid fa-star-half-stroke text-brand-yellow"></i>';
+
+        return `
+          <div class="bg-white border border-gray-200 rounded-2xl p-5 hover:border-brand-green hover:shadow-md transition-all flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start mb-2">
+                <span class="text-xs font-bold bg-gray-100 text-gray-700 px-2.5 py-1 rounded-md">
+                  ${tv.brand} • ${tv.size}
+                </span>
+                <span class="text-xs font-bold text-brand-brown bg-brand-lightyellow border border-brand-gold/40 px-2 py-0.5 rounded-full">
+                  ${tv.tech}
+                </span>
+              </div>
+              <h3 class="font-bold text-gray-900 text-base mb-1">${tv.model}</h3>
+              
+              <!-- Stars -->
+              <div class="flex items-center gap-1 text-sm mb-4">
+                ${starIcons}
+                <span class="text-xs text-gray-500 font-semibold ml-1">(${tv.stars} Stars)</span>
+              </div>
+
+              <div class="space-y-2 bg-gray-50 p-3 rounded-xl text-xs mb-4">
+                <div class="flex justify-between text-gray-600">
+                  <span>Energy Consumption:</span>
+                  <strong class="text-gray-900">${tv.kwhPerYear} kWh/yr</strong>
+                </div>
+                <div class="flex justify-between text-gray-600">
+                  <span>Power Rating:</span>
+                  <strong class="text-gray-900">${tv.wattage} Watts</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-gray-100 flex justify-between items-center text-xs">
+              <span class="text-gray-500">Est. Running Cost (@ $0.30/kWh):</span>
+              <span class="text-brand-green font-extrabold text-sm">$${annualCost}/yr</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Filter TVs by Technology
+    function filterTvs(tech) {
+      // Update button styling
+      const buttons = document.querySelectorAll('#tech-filters .tab-btn');
+      buttons.forEach(btn => {
+        btn.classList.remove('active-tab', 'bg-brand-green', 'text-white');
+        btn.classList.add('bg-gray-100', 'text-gray-700');
+      });
+
+      event.currentTarget.classList.add('active-tab');
+      event.currentTarget.classList.remove('bg-gray-100', 'text-gray-700');
+
+      if (tech === 'all') {
+        renderTvs(tvData);
+      } else {
+        const filtered = tvData.filter(tv => tv.tech.includes(tech));
+        renderTvs(filtered);
+      }
+    }
+
+    // On Page Initialization
+    window.onload = function() {
+      // Set initial page view
+      navigateTo('home');
+
+      // Initialize calculator values
+      calculateEnergy();
+
+      // Render default TV items
+      renderTvs(tvData);
+
+      // Dynamic year in footer
+      document.getElementById('current-year').innerText = new Date().getFullYear();
+    };
+  </script>
+</body>
+</html>
