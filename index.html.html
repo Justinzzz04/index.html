@@ -51,7 +51,7 @@
         <!-- Logo Section -->
         <div class="flex items-center space-x-3 cursor-pointer group" id="logo-button" onclick="navigateTo('home')">
           <div class="w-12 h-12 transform group-hover:scale-105 transition-transform duration-200">
-            <!-- Custom SVG Power Icon matching the user's uploaded icon style -->
+            <!-- Custom SVG Power Icon -->
             <svg viewBox="0 0 400 400" class="w-full h-full drop-shadow">
               <circle cx="200" cy="200" r="180" class="power-icon-circle"/>
               <!-- Rays -->
@@ -449,6 +449,18 @@
 
     </section>
 
+    <!-- D3.JS DATA VISUALIZATION CONTAINERS -->
+    <div class="mt-12 space-y-6">
+      <h1>Appliance Energy Consumption</h1>
+      <div id="content"></div>
+
+      <!-- SVG container with explicit width/height -->
+      <svg width="300" height="150"></svg>
+
+      <!-- Container for T04-3 chart -->
+      <div class="responsive-svg-container"></div>
+    </div>
+
   </main>
 
   <!-- FOOTER -->
@@ -492,7 +504,7 @@
       </div>
 
       <div class="border-t border-gray-800 pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500 gap-4">
-        <p>© <span id="current-year">2026</span> EnergyWise AU — Developed by <span class="text-gray-300 font-semibold">[Your Name]</span> for COS30045 T01.</p>
+        <p>© <span id="current-year">2026</span> EnergyWise AU — Developed for COS30045 T01.</p>
         <button onclick="toggleGenAiModal()" class="text-brand-gold hover:underline flex items-center gap-1">
           <i class="fa-solid fa-file-code"></i> View README & GenAI Reflection Notes
         </button>
@@ -735,25 +747,11 @@
     };
   </script>
 
-<h1>Appliance Energy Consumption</h1>
-<div id="content"></div>
-
-<!-- SVG container with explicit width/height -->
-<svg width="300" height="150"></svg>
-
-<!-- Container for T04-3 chart -->
-<div class="responsive-svg-container"></div>
-
-<!-- Scripts -->
-<script src="https://d3js.org/d3.v7.min.js"></script>
-<script src="t04-3-bars.js"></script>
-<!-- <script src="energy-d3.js"></script> -->
- <script src="https://d3js.org/d3.v7.min.js"></script>
-<script src="t04-4-load.js"></script>
-<!-- <script src="t04-3-bars.js"></script> -->
- <script src="https://d3js.org/d3.v7.min.js"></script>
-<script src="t04-4-load.js"></script>
-<script src="t04-5-bars.js"></script>
+  <!-- External D3.js Scripts -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="t04-3-bars.js"></script>
+  <script src="t04-4-load.js"></script>
+  <script src="t04-5-bars.js"></script>
 
 </body>
 </html>
