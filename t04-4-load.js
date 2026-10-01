@@ -12,7 +12,7 @@ d3.csv("data/tvBrandCount.csv", d => ({
   // Sort descending by count
   data.sort((a, b) => d3.descending(a.count, b.count));
 
-  // Pass to chart function (implemented in T04-5+)
+  // Pass loaded data to the chart renderer
   if (typeof createBarChart === "function") {
     createBarChart(data);
   }

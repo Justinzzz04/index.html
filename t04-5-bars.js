@@ -1,5 +1,8 @@
 const createBarChart = (data) => {
-  // --- Sizes (logical vs display) ---
+  // Clear any existing chart before rendering
+  d3.select(".responsive-svg-container").html("");
+
+  // --- Dimensions ---
   const viewW = 500;
   const viewH = Math.max(220, data.length * 28);
   const displayW = 640;
@@ -17,7 +20,7 @@ const createBarChart = (data) => {
   const xMax = d3.max(data, d => d.count);
   const xScale = d3.scaleLinear()
     .domain([0, xMax])
-    .range([0, viewW - 120]); // Reserve horizontal space for labels
+    .range([0, viewW - 120]); // Reserve horizontal space for value labels
 
   const yScale = d3.scaleBand()
     .domain(data.map(d => d.brand))

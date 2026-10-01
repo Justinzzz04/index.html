@@ -1,4 +1,4 @@
-/* Custom SVG Logo Styles matching provided image */
+/* Custom SVG Logo Styles */
 .power-icon-circle {
   fill: #fbe285;
   stroke: #8c6d3b;
@@ -53,11 +53,8 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #2e7d32;
 }
-.responsive-svg-container {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 1200px;
-}
+
+/* Responsive SVG Container */
 .responsive-svg-container {
   margin: 0 auto;
   width: 100%;
