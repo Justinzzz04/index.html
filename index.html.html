@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Appliance Energy Consumption - Australia | COS30045 T01</title>
+  <!-- External CSS Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- FontAwesome Icons -->
@@ -37,64 +39,6 @@
       }
     }
   </script>
-
-  <style>
-    /* Custom SVG Logo Styles matching provided image */
-    .power-icon-circle {
-      fill: #fbe285;
-      stroke: #8c6d3b;
-      stroke-width: 14;
-    }
-    .power-icon-bolt {
-      fill: #e59c16;
-      stroke: #8c6d3b;
-      stroke-width: 10;
-      stroke-linejoin: round;
-    }
-    .power-icon-ray {
-      stroke: #8c6d3b;
-      stroke-width: 12;
-      stroke-linecap: round;
-    }
-
-    /* Active Nav Styling */
-    .nav-btn {
-      position: relative;
-      transition: all 0.2s ease-in-out;
-    }
-    .nav-btn.active {
-      color: #1b5e20;
-      font-weight: 700;
-      background-color: #e8f5e9;
-      border-bottom: 3px solid #2e7d32;
-    }
-    .nav-btn:hover:not(.active) {
-      background-color: #f4fbf4;
-      color: #2e7d32;
-    }
-
-    /* Tab Button Styles */
-    .tab-btn.active-tab {
-      background-color: #2e7d32;
-      color: #ffffff;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #f1f1f1;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #81c784;
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #2e7d32;
-    }
-  </style>
 </head>
 
 <body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col antialiased selection:bg-brand-gold selection:text-brand-darkgreen">
@@ -790,7 +734,7 @@
       document.getElementById('current-year').innerText = new Date().getFullYear();
     };
   </script>
-  <!-- Below your existing </header> -->
+
 <h1>Appliance Energy Consumption</h1>
 <div id="content"></div>
 
